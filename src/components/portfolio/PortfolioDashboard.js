@@ -67,7 +67,9 @@ class PortfolioDashboard extends Component {
                 <div>
                     Gains and losses : {totalProfit} € ({round(totalProfit/totalCost*100)} %)
                 </div>
-                <PortfolioRepartitionChart items={this.state.holdings}/>
+                <div>
+                    <PortfolioRepartitionChart items={this.state.holdings}/>
+                </div>
                 {listHoldingCard}
             </div>
         );

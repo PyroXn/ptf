@@ -46,7 +46,7 @@ class PortfolioRepartitionChart extends Component {
             <Doughnut data={this.state.data}
                       options={this.state.options}
                       width={100}
-                      height={100}
+                      height={300}
             />
         );
     }
