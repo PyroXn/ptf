@@ -29,6 +29,9 @@ app.use('/api/currency', currency);
 app.use('/api/portfolio', portfolio);
 app.use('/api/market', market);
 
+app.use('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '/build/index.html'));
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
