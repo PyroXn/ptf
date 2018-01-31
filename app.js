@@ -55,4 +55,5 @@ var j = schedule.scheduleJob('0 0 * * *', function() {
     currencyUtil.marketImport();
 });
 
+app.listen(3000);
 module.exports = app;
