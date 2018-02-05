@@ -23,6 +23,7 @@ router.get('/:portfolioId/:currencyId', function(req, res, next) {
             portfolio: mongoose.Types.ObjectId(req.params.portfolioId),
             currency: mongoose.Types.ObjectId(req.params.currencyId)})
         .populate('currency')
+        .populate('market', '_id name')
         .lean()
         .exec(function (err, transactions) {
             if (err) return next(err);
@@ -44,9 +45,12 @@ router.get('/:id', function(req, res, next) {
 
 /* SAVE TRANSACTION */
 router.post('/', function(req, res, next) {
-    Transaction.create(req.body, function (err, post) {
-        if (err) return next(err);
-        res.json(post);
+    let tr = currencyUtil.historicalPrice(req.body);
+    tr.then(function(val) {
+        Transaction.create(val, function (err, post) {
+            if (err) return next(err);
+            res.json(post);
+        });
     });
 });
 

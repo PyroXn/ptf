@@ -1,11 +1,13 @@
 import React, {Component} from 'react';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import ContentAdd from 'material-ui/svg-icons/content/add';
-import FontIcon from 'material-ui/FontIcon';
-import {blue500, red500} from 'material-ui/styles/colors';
-import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn,} from 'material-ui/Table';
+import Button from 'material-ui/Button';
+import Add from 'material-ui-icons/Add';
+import IconButton from 'material-ui/IconButton';
+import EditIcon from 'material-ui-icons/Edit';
+import DeleteIcon from 'material-ui-icons/Delete';
+import VisibilityIcon from 'material-ui-icons/Visibility';
+import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 
 class PortfolioList extends Component {
 
@@ -33,17 +35,23 @@ class PortfolioList extends Component {
     render() {
         const listItems = this.state.portfolios.map(portfolio =>
             <TableRow key={portfolio._id}>
-                <TableRowColumn>{portfolio._id}</TableRowColumn>
-                <TableRowColumn>{portfolio.name}</TableRowColumn>
-                <TableRowColumn>
+                <TableCell>{portfolio._id}</TableCell>
+                <TableCell>{portfolio.name}</TableCell>
+                <TableCell>
                     <Link to={`portfolio/${portfolio._id}`}>
-                        <FontIcon className="material-icons">visibility</FontIcon>
+                        <IconButton aria-label="show">
+                            <VisibilityIcon />
+                        </IconButton>
                     </Link>
                     <Link to={`portfolio/edit/${portfolio._id}`}>
-                        <FontIcon className="material-icons" color={blue500}>edit</FontIcon>
+                        <IconButton color="primary" aria-label="edit">
+                            <EditIcon />
+                        </IconButton>
                     </Link>
-                    <FontIcon className="material-icons" color={red500} onClick={this.delete.bind(this, portfolio._id)}>delete</FontIcon>
-                </TableRowColumn>
+                    <IconButton color="secondary" aria-label="delete" onClick={this.delete.bind(this, portfolio._id)}>
+                        <DeleteIcon />
+                    </IconButton>
+                </TableCell>
 
             </TableRow>
         );
@@ -51,18 +59,18 @@ class PortfolioList extends Component {
 
             <div>
                 <Link to="/portfolio/create">
-                    <FloatingActionButton >
-                        <ContentAdd />
-                    </FloatingActionButton>
+                    <Button fab color="primary" aria-label="add">
+                        <Add />
+                    </Button>
                 </Link>
                 <Table>
-                    <TableHeader>
+                    <TableHead>
                         <TableRow>
-                            <TableHeaderColumn>Id</TableHeaderColumn>
-                            <TableHeaderColumn>Name</TableHeaderColumn>
-                            <TableHeaderColumn>Action</TableHeaderColumn>
+                            <TableCell>Id</TableCell>
+                            <TableCell>Name</TableCell>
+                            <TableCell>Action</TableCell>
                         </TableRow>
-                    </TableHeader>
+                    </TableHead>
                     <TableBody>
                         {listItems}
                     </TableBody>

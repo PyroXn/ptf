@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import axios from 'axios';
-import RaisedButton from 'material-ui/RaisedButton';
+import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 
 class PortfolioForm extends Component {
@@ -45,8 +45,10 @@ class PortfolioForm extends Component {
     render() {
         return (
             <form onSubmit={this.handleSubmit}>
-                <TextField floatingLabelText="Name" name="name" value={this.state.name} onChange={this.handleChange} />
-                <RaisedButton type="submit" label="Save" primary={true} />
+                <TextField label="Name" name="name" value={this.state.name} onChange={this.handleChange} />
+                <Button raised type="submit" color="primary">
+                    Save
+                </Button>
             </form>
         );
     }

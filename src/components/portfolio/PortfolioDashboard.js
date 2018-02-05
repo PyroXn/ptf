@@ -4,8 +4,7 @@ import {Link} from 'react-router-dom';
 import HoldingCard from "../holding/HoldingCard";
 import PortfolioRepartitionChart from "./PortfolioRepartitionChart";
 import {round} from "../util/NumberUtil";
-import RaisedButton from 'material-ui/RaisedButton';
-import AddCircle from 'material-ui/svg-icons/content/add-circle';
+import Button from 'material-ui/Button';
 
 
 class PortfolioDashboard extends Component {
@@ -50,12 +49,9 @@ class PortfolioDashboard extends Component {
                         pathname: '/transaction/create',
                         state: { portfolioId: this.props.match.params.id }
                     }}>
-                    <RaisedButton
-                        label="Add Transaction"
-                        labelPosition="before"
-                        primary={true}
-                        icon={<AddCircle />}
-                    />
+                    <Button raised color="primary">
+                        Add Transaction
+                    </Button>
                 </Link>
 
                 <div>

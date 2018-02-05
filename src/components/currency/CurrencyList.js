@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import axios from 'axios';
-import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn,} from 'material-ui/Table';
-import RaisedButton from 'material-ui/RaisedButton';
-import AutoComplete from 'material-ui/AutoComplete';
+
+import Table, {TableBody, TableCell, TableHead, TableRow} from 'material-ui/Table';
+import Button from 'material-ui/Button';
 
 
 class CurrencyList extends Component {
@@ -46,36 +46,39 @@ class CurrencyList extends Component {
     render() {
         const listItems = this.state.currencies.map(currency =>
             <TableRow key={currency._id}>
-                <TableRowColumn>{currency.Name}</TableRowColumn>
-                <TableRowColumn>{currency.Symbol}</TableRowColumn>
-                <TableRowColumn>{currency.CoinName}</TableRowColumn>
-                <TableRowColumn>{currency.FullName}</TableRowColumn>
-                <TableRowColumn>{currency.Algorithm}</TableRowColumn>
-                <TableRowColumn>{currency.ProofType}</TableRowColumn>
-                <TableRowColumn>{currency.SortOrder}</TableRowColumn>
+                <TableCell>{currency.Name}</TableCell>
+                <TableCell>{currency.Symbol}</TableCell>
+                <TableCell>{currency.CoinName}</TableCell>
+                <TableCell>{currency.FullName}</TableCell>
+                <TableCell>{currency.Algorithm}</TableCell>
+                <TableCell>{currency.ProofType}</TableCell>
+                <TableCell>{currency.SortOrder}</TableCell>
             </TableRow>
         );
         return (
             <div>
-                <AutoComplete
+                {/*<AutoComplete
                     floatingLabelText='Enter test'
                     dataSource={this.state.currencies}
                     onUpdateInput={(val) => this.searchSomething(val)}
                     fullWidth={true}
                     filter={(searchText, key) => true} />
-                <RaisedButton label="Force update" primary={true} onClick={this.forceCurrencyUpdate} />
+                <Button label="Force update" primary={true} onClick={this.forceCurrencyUpdate} />*/}
+                <Button raised color="primary" onClick={this.forceCurrencyUpdate}>
+                    Force update
+                </Button>
                 <Table>
-                    <TableHeader>
+                    <TableHead>
                         <TableRow>
-                            <TableHeaderColumn>Name</TableHeaderColumn>
-                            <TableHeaderColumn>Symbol</TableHeaderColumn>
-                            <TableHeaderColumn>CoinName</TableHeaderColumn>
-                            <TableHeaderColumn>FullName</TableHeaderColumn>
-                            <TableHeaderColumn>Algorithm</TableHeaderColumn>
-                            <TableHeaderColumn>ProofType</TableHeaderColumn>
-                            <TableHeaderColumn>SortOrder</TableHeaderColumn>
+                            <TableCell>Name</TableCell>
+                            <TableCell>Symbol</TableCell>
+                            <TableCell>CoinName</TableCell>
+                            <TableCell>FullName</TableCell>
+                            <TableCell>Algorithm</TableCell>
+                            <TableCell>ProofType</TableCell>
+                            <TableCell>SortOrder</TableCell>
                         </TableRow>
-                    </TableHeader>
+                    </TableHead>
                     <TableBody>
                         {listItems}
                     </TableBody>

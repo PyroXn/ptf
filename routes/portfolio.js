@@ -25,6 +25,7 @@ router.get('/:id/detail', function(req, res, next) {
                 action,
                 book_price,
                 quantity,
+                historical_price
             }) => {
                 // Create new group
                 if (!result[currency]) {
@@ -32,6 +33,7 @@ router.get('/:id/detail', function(req, res, next) {
                         currency,
                         book_price: book_price,
                         quantity: action === 'BUY' ? quantity : -quantity,
+                        historical_price: historical_price,
                     }
                 } else {
                     if (action === 'BUY') {

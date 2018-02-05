@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import ContentAdd from 'material-ui/svg-icons/content/add';
-import FontIcon from 'material-ui/FontIcon';
-import {blue500, red500} from 'material-ui/styles/colors';
-import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn,} from 'material-ui/Table';
+import Button from 'material-ui/Button';
+import Add from 'material-ui-icons/Add';
+import IconButton from 'material-ui/IconButton';
+import EditIcon from 'material-ui-icons/Edit';
+import DeleteIcon from 'material-ui-icons/Delete';
+import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 
 class TransactionList extends Component {
 
@@ -34,28 +35,32 @@ class TransactionList extends Component {
     render() {
         const listItems = this.state.transactions.map(transaction =>
             <TableRow key={transaction._id}>
-                <TableRowColumn>{transaction.currency.FullName}</TableRowColumn>
-                <TableRowColumn>{transaction.EUR.market_price}</TableRowColumn>
-                <TableRowColumn>{transaction.EUR.change24}</TableRowColumn>
-                <TableRowColumn>{transaction.EUR.volume24}</TableRowColumn>
+                <TableCell>{transaction.currency.FullName}</TableCell>
+                <TableCell>{transaction.EUR.market_price}</TableCell>
+                <TableCell>{transaction.EUR.change24}</TableCell>
+                <TableCell>{transaction.EUR.volume24}</TableCell>
 
-                <TableRowColumn>{transaction.EUR.value}</TableRowColumn>
-                <TableRowColumn>{transaction.EUR.cost}</TableRowColumn>
-                <TableRowColumn>{transaction.EUR.profit}</TableRowColumn>
-                <TableRowColumn>{transaction.EUR.profit_pct}</TableRowColumn>
+                <TableCell>{transaction.EUR.value}</TableCell>
+                <TableCell>{transaction.EUR.cost}</TableCell>
+                <TableCell>{transaction.EUR.profit}</TableCell>
+                <TableCell>{transaction.EUR.profit_pct}</TableCell>
 
-                <TableRowColumn>{transaction.action}</TableRowColumn>
-                <TableRowColumn>{transaction.market}</TableRowColumn>
-                <TableRowColumn>{transaction.trading_pair}</TableRowColumn>
-                <TableRowColumn>{transaction.quantity}</TableRowColumn>
-                <TableRowColumn>{transaction.book_price}</TableRowColumn>
-                <TableRowColumn>{transaction.date}</TableRowColumn>
-                <TableRowColumn>
+                <TableCell>{transaction.action}</TableCell>
+                <TableCell>{transaction.market.name}</TableCell>
+                <TableCell>{transaction.trading_pair}</TableCell>
+                <TableCell>{transaction.quantity}</TableCell>
+                <TableCell>{transaction.book_price}</TableCell>
+                <TableCell>{transaction.date}</TableCell>
+                <TableCell>
                     <Link to={`transaction/edit/${transaction._id}`}>
-                        <FontIcon className="material-icons" color={blue500}>edit</FontIcon>
+                        <IconButton color="primary" aria-label="Edit">
+                            <EditIcon />
+                        </IconButton>
                     </Link>
-                    <FontIcon className="material-icons" color={red500} onClick={this.delete.bind(this, transaction._id)}>delete</FontIcon>
-                </TableRowColumn>
+                    <IconButton color="secondary" aria-label="delete" onClick={this.delete.bind(this, transaction._id)}>
+                        <DeleteIcon />
+                    </IconButton>
+                </TableCell>
 
             </TableRow>
         );
@@ -63,32 +68,32 @@ class TransactionList extends Component {
 
             <div>
                 <Link to="/transaction/create">
-                    <FloatingActionButton >
-                        <ContentAdd />
-                    </FloatingActionButton>
+                    <Button fab color="primary" aria-label="add">
+                        <Add />
+                    </Button>
                 </Link>
                 <Table>
-                    <TableHeader>
+                    <TableHead>
                         <TableRow>
-                            <TableHeaderColumn>Currency</TableHeaderColumn>
-                            <TableHeaderColumn>Market Price €</TableHeaderColumn>
-                            <TableHeaderColumn>% Change 24h</TableHeaderColumn>
-                            <TableHeaderColumn>Volume 24h</TableHeaderColumn>
+                            <TableCell>Currency</TableCell>
+                            <TableCell>Market Price €</TableCell>
+                            <TableCell>% Change 24h</TableCell>
+                            <TableCell>Volume 24h</TableCell>
 
-                            <TableHeaderColumn>Value</TableHeaderColumn>
-                            <TableHeaderColumn>Cost</TableHeaderColumn>
-                            <TableHeaderColumn>Profit</TableHeaderColumn>
-                            <TableHeaderColumn>Profit %</TableHeaderColumn>
+                            <TableCell>Value</TableCell>
+                            <TableCell>Cost</TableCell>
+                            <TableCell>Profit</TableCell>
+                            <TableCell>Profit %</TableCell>
 
-                            <TableHeaderColumn>Action</TableHeaderColumn>
-                            <TableHeaderColumn>Market</TableHeaderColumn>
-                            <TableHeaderColumn>Trading Pair</TableHeaderColumn>
-                            <TableHeaderColumn>Quantity</TableHeaderColumn>
-                            <TableHeaderColumn>Book Price</TableHeaderColumn>
-                            <TableHeaderColumn>Date</TableHeaderColumn>
-                            <TableHeaderColumn>Action</TableHeaderColumn>
+                            <TableCell>Action</TableCell>
+                            <TableCell>Market</TableCell>
+                            <TableCell>Trading Pair</TableCell>
+                            <TableCell>Quantity</TableCell>
+                            <TableCell>Book Price</TableCell>
+                            <TableCell>Date</TableCell>
+                            <TableCell>Action</TableCell>
                         </TableRow>
-                    </TableHeader>
+                    </TableHead>
                     <TableBody>
                         {listItems}
                     </TableBody>

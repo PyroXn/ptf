@@ -1,24 +1,26 @@
 import React, {Component} from 'react';
 import axios from 'axios';
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
-import RaisedButton from 'material-ui/RaisedButton';
+import Select from 'material-ui/Select';
+import {MenuItem} from 'material-ui/Menu';
+import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
-import DatePicker from 'material-ui/DatePicker';
-import AutoComplete from 'material-ui/AutoComplete';
+import {FormControl} from 'material-ui/Form';
+import {InputLabel} from 'material-ui/Input';
+import { Async } from 'react-select';
+import 'react-select/dist/react-select.css';
+import {inputDate} from "../util/DateUtil";
 
 class TransactionForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            currencies: [],
-            currency: 0,
+            currency: {},
             action: 'BUY',
-            market: '',
+            market: {},
             trading_pair: '',
             book_price: 0,
             quantity: 0,
-            date: new Date(),
+            date: inputDate(),
             portfolio: '',
         };
         this.handleChange = this.handleChange.bind(this);
@@ -31,7 +33,7 @@ class TransactionForm extends Component {
             axios.get('/api/transaction/' + this.props.match.params.id)
                 .then(res => {
                     res.data.date = res.data.date === null ? new Date() : new Date(this.state.date);
-                    res.data.currencies = [res.data.currency];
+                    res.data.currency = [res.data.currency];
                     this.setState(res.data);
                 });
         } else if (this.props.location.state) {
@@ -40,6 +42,7 @@ class TransactionForm extends Component {
     }
 
     handleChange(event) {
+        console.log(event);
         this.setState({[event.target.name]: event.target.value});
     }
 
@@ -60,49 +63,105 @@ class TransactionForm extends Component {
     }
 
     searchCurrency(val) {
-        if (val) {
-            axios.get('/api/currency/search/' + val)
-                .then(res => {
-                    let data = res.data;
-                    this.setState({currencies: data});
-                });
+        if (!val) {
+            return Promise.resolve({ options: [] });
         }
+        return axios.get('/api/currency/search/' + val)
+            .then(res => {
+                return { options: res.data};
+            });
     }
 
+    searchMarket = (val) => {
+        if (!val) {
+            return Promise.resolve({ options: [] });
+        }
+        return axios.get('/api/market/search', {
+                params: {
+                    name: val,
+                    currency: this.state.currency.Symbol
+                }
+            })
+            .then(res => {
+                return { options: res.data};
+            });
+    };
+
     selectCurrency(val) {
-        this.setState({currency: val});
+        console.log(this);
+        this.setState({
+            currency: val
+        });
     }
 
 
 
     render() {
-        const dataSourceConfig = {
-            text: 'FullName',
-            value: '_id',
-        };
+        let tradingPairItems = '';
+        if(this.state.market.pairs) {
+            console.log(this.state.market.pairs);
+            tradingPairItems = Object.keys(this.state.market.pairs).map(key =>
+                this.state.market.pairs[key].map(value =>
+                    <MenuItem key={value} value={value}>{key} / {value}</MenuItem>
+                )
+            );
+        }
+
         return (
             <form onSubmit={this.handleSubmit}>
-                <AutoComplete
-                    floatingLabelText="Select currency"
-                    filter={AutoComplete.noFilter}
-                    openOnFocus={true}
-                    dataSource={this.state.currencies}
-                    dataSourceConfig={dataSourceConfig}
-                    onUpdateInput={(searchText) => this.searchCurrency(searchText)}
-                    onNewRequest={(chosenRequest) => this.selectCurrency(chosenRequest)}
-                    searchText={this.state.currency.FullName}
+                <Async value={this.state.currency}
+                                onChange={(response) => this.setState({ currency: response})}
+                                valueKey="_id"
+                                labelKey="FullName"
+                                loadOptions={this.searchCurrency}
+                                backspaceRemoves={true}/>
+                <FormControl>
+                    <InputLabel htmlFor="action">Action</InputLabel>
+                    <Select value={this.state.action} onChange={this.handleChange}
+                            inputProps={{
+                                name: 'action',
+                                id: 'action',
+                            }}>
+                        <MenuItem value={'BUY'}>Buy</MenuItem>
+                        <MenuItem value={'SELL'}>Sell</MenuItem>
+                    </Select>
+                </FormControl>
+                <Async value={this.state.market}
+                       onChange={(response) => this.setState({ market: response})}
+                       valueKey="_id"
+                       labelKey="name"
+                       loadOptions={this.searchMarket}
+                       backspaceRemoves={true}/>
+
+                <FormControl>
+                    <InputLabel htmlFor="pairs">Trading Pair</InputLabel>
+                    <Select value={this.state.trading_pair} onChange={this.handleChange}
+                            inputProps={{
+                                name: 'trading_pair',
+                                id: 'trading_pair',
+                            }}>
+                        <MenuItem value="">
+                            <em>None</em>
+                        </MenuItem>
+                        {tradingPairItems}
+                    </Select>
+                </FormControl>
+
+                <TextField label="Book Price" name="book_price" value={this.state.book_price} onChange={this.handleChange} />
+                <TextField label="Quantity" name="quantity" value={this.state.quantity} onChange={this.handleChange} />
+                <TextField
+                    label="Date"
+                    name="date"
+                    type="datetime-local"
+                    defaultValue={this.state.date}
+                    onChange={this.handleChange}
+                    InputLabelProps={{
+                        shrink: true,
+                    }}
                 />
-                <SelectField floatingLabelText="Action" name="action" value={this.state.action} onChange={(event, index, response) => this.setState({ action: response})}>
-                    <MenuItem value={'BUY'} primaryText="Buy" />
-                    <MenuItem value={'SELL'} primaryText="Sell" />
-                </SelectField>
-                <TextField floatingLabelText="Market" name="market" value={this.state.market} onChange={this.handleChange} />
-                <TextField floatingLabelText="Trading Pair" name="trading_pair" value={this.state.trading_pair} onChange={this.handleChange} />
-                <TextField floatingLabelText="Book Price" name="book_price" value={this.state.book_price} onChange={this.handleChange} />
-                <TextField floatingLabelText="Quantity" name="quantity" value={this.state.quantity} onChange={this.handleChange} />
-                <DatePicker hintText="Date" DateTimeFormat={global.Intl.DateTimeFormat} locale="fr" name="date"
-                            value={this.state.date} onChange={(event, date) => this.setState({ date: date})} />
-                <RaisedButton type="submit" label="Save" primary={true} />
+                <Button raised type="submit" color="primary">
+                    Save
+                </Button>
             </form>
         );
     }
