@@ -31,9 +31,16 @@ class TransactionForm extends Component {
         if (this.props.match.params.id) {
             axios.get('/api/transaction/' + this.props.match.params.id)
                 .then(res => {
-                    res.data.date = res.data.date === null ? new Date() : new Date(this.state.date);
-                    res.data.currency = [res.data.currency];
-                    this.setState(res.data);
+                    res.data.date = res.data.date === null ? inputDate() : inputDate(new Date(this.state.date));
+                    axios.get('/api/market/pairs', {
+                        params: {
+                            marketId: res.data.market,
+                            currency: res.data.currency.Symbol
+                        }
+                    }).then(market => {
+                        res.data.market = market.data[0];
+                        this.setState(res.data);
+                    });
                 });
         } else if (this.props.location.state) {
             this.setState({portfolio: this.props.location.state.portfolioId})

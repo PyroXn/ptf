@@ -21,4 +21,16 @@ router.get('/search', function(req, res) {
     }).limit(5).sort('_id');
 });
 
+router.get('/pairs', function(req, res) {
+    let key = 'pairs.'+ req.query.currency;
+    Market.find({_id: req.query.marketId, [key]: { $exists : true }}, `name ${[key]}`, function(err, foundItems) {
+        if (err) {
+            console.log(err);
+            console.log("problem!")
+        } else {
+            res.json(foundItems);
+        }
+    });
+});
+
 module.exports = router;

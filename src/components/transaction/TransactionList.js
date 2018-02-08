@@ -51,7 +51,7 @@ class TransactionList extends Component {
                 <TableCell>{transaction.book_price}</TableCell>
                 <TableCell>{transaction.date}</TableCell>
                 <TableCell>
-                    <Link to={`transaction/edit/${transaction._id}`}>
+                    <Link to={`/transaction/edit/${transaction._id}`}>
                         <IconButton color="primary" aria-label="Edit">
                             <EditIcon />
                         </IconButton>
