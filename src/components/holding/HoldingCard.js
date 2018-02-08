@@ -14,7 +14,6 @@ class HoldingCard extends Component {
     }
 
     render() {
-        console.log(this.props);
         return (
             <Link to={`/${this.props.portfolioId}/transactions/${this.props.items.currency._id}`} style={{textDecoration: 'none'}}>
                 <Card>
@@ -30,10 +29,10 @@ class HoldingCard extends Component {
                             {`${round(this.props.items.quantity, 4)} ${this.props.items.currency.Symbol}`}
                         </Typography>
                         <Typography type="headline" component="h3">
-                            {`${this.props.items.EUR.value} € (${this.props.items.EUR.profit} € / ${this.props.items.EUR.profit_pct} %)`}
+                            {`VALUE : ${round(this.props.items.EUR.value)} € COST : ${round(this.props.items.EUR.cost)} €`}
                         </Typography>
                         <Typography component="p">
-                            {this.props.items.EUR.market_price}  € ({this.props.items.EUR.change24})
+                            {`PROFIT : ${round(this.props.items.EUR.profit)} € / ${round(this.props.items.EUR.profit_pct)} %`}
                         </Typography>
                     </CardContent>
                 </Card>

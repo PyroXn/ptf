@@ -59,7 +59,7 @@ class PortfolioList extends Component {
 
             <div>
                 <Link to="/portfolio/create">
-                    <Button fab color="primary" aria-label="add">
+                    <Button variant="fab" color="primary" aria-label="add">
                         <Add />
                     </Button>
                 </Link>

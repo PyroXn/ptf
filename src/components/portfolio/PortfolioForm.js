@@ -46,7 +46,7 @@ class PortfolioForm extends Component {
         return (
             <form onSubmit={this.handleSubmit}>
                 <TextField label="Name" name="name" value={this.state.name} onChange={this.handleChange} />
-                <Button raised type="submit" color="primary">
+                <Button variant="raised" type="submit" color="primary">
                     Save
                 </Button>
             </form>

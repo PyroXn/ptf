@@ -28,7 +28,6 @@ class TransactionForm extends Component {
     }
 
     componentDidMount() {
-        console.log(this.props.location.state.portfolioId);
         if (this.props.match.params.id) {
             axios.get('/api/transaction/' + this.props.match.params.id)
                 .then(res => {
@@ -42,7 +41,6 @@ class TransactionForm extends Component {
     }
 
     handleChange(event) {
-        console.log(event);
         this.setState({[event.target.name]: event.target.value});
     }
 
@@ -88,7 +86,6 @@ class TransactionForm extends Component {
     };
 
     selectCurrency(val) {
-        console.log(this);
         this.setState({
             currency: val
         });
@@ -99,7 +96,6 @@ class TransactionForm extends Component {
     render() {
         let tradingPairItems = '';
         if(this.state.market.pairs) {
-            console.log(this.state.market.pairs);
             tradingPairItems = Object.keys(this.state.market.pairs).map(key =>
                 this.state.market.pairs[key].map(value =>
                     <MenuItem key={value} value={value}>{key} / {value}</MenuItem>
@@ -159,7 +155,7 @@ class TransactionForm extends Component {
                         shrink: true,
                     }}
                 />
-                <Button raised type="submit" color="primary">
+                <Button variant="raised" type="submit" color="primary">
                     Save
                 </Button>
             </form>

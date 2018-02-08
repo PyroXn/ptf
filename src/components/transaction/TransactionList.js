@@ -18,7 +18,6 @@ class TransactionList extends Component {
     }
 
     componentDidMount() {
-        console.log(this.props.match.params);
         axios.get(`/api/transaction/${this.props.match.params.portfolioId}/${this.props.match.params.currencyId}`)
             .then(res => {
                 this.setState({transactions: res.data});
@@ -41,7 +40,7 @@ class TransactionList extends Component {
                 <TableCell>{transaction.EUR.volume24}</TableCell>
 
                 <TableCell>{transaction.EUR.value}</TableCell>
-                <TableCell>{transaction.EUR.cost}</TableCell>
+                <TableCell>{transaction.action === 'BUY' ? transaction.EUR.cost : transaction.EUR.gain}</TableCell>
                 <TableCell>{transaction.EUR.profit}</TableCell>
                 <TableCell>{transaction.EUR.profit_pct}</TableCell>
 
@@ -68,7 +67,7 @@ class TransactionList extends Component {
 
             <div>
                 <Link to="/transaction/create">
-                    <Button fab color="primary" aria-label="add">
+                    <Button variant="fab" color="primary" aria-label="add">
                         <Add />
                     </Button>
                 </Link>
@@ -81,7 +80,7 @@ class TransactionList extends Component {
                             <TableCell>Volume 24h</TableCell>
 
                             <TableCell>Value</TableCell>
-                            <TableCell>Cost</TableCell>
+                            <TableCell>Cost / Gain</TableCell>
                             <TableCell>Profit</TableCell>
                             <TableCell>Profit %</TableCell>
 

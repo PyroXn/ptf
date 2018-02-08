@@ -38,7 +38,6 @@ class PortfolioRepartitionChart extends Component {
 
             this.setState({'data': data});
         }
-        console.log(nextProps.items);
     }
 
     render() {

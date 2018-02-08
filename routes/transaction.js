@@ -12,12 +12,14 @@ router.get('/', function(req, res, next) {
         .lean()
         .exec(function (err, transactions) {
             if (err) return next(err);
-            currencyUtil.currencyLive(transactions, res);
+            let tr = currencyUtil.currencyLive(transactions);
+            tr.then(function(val) {
+                res.json(val);
+            });
         });
 });
 
 router.get('/:portfolioId/:currencyId', function(req, res, next) {
-    console.log('la');
     Transaction
         .find({
             portfolio: mongoose.Types.ObjectId(req.params.portfolioId),
@@ -27,7 +29,10 @@ router.get('/:portfolioId/:currencyId', function(req, res, next) {
         .lean()
         .exec(function (err, transactions) {
             if (err) return next(err);
-            currencyUtil.currencyLive(transactions, res);
+            let tr = currencyUtil.currencyLive(transactions);
+            tr.then(function(val) {
+                res.json(val);
+            });
         });
 });
 

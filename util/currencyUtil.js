@@ -71,7 +71,7 @@ const round = function(num, decimal = 2) {
     return parseFloat(num.toFixed(decimal))
 };
 
-exports.currencyLive = function(transactions, res) {
+exports.currencyLive = function(transactions) {
     let tsyms = ['USD', 'EUR', 'BTC'];
     let options = {
         // https://min-api.cryptocompare.com/data/pricemultifull?fsym=LTC&tsyms=USD,EUR,BTC&e=CCCAGG
@@ -86,35 +86,68 @@ exports.currencyLive = function(transactions, res) {
         },
         json: true
     };
-    rp(options)
+    return rp(options)
         .then(function (liveInfo) {
             transactions.forEach(transaction => {
-                console.log(transaction);
                 let fsymInfo = liveInfo.RAW[transaction.currency.Symbol];
                 tsyms.forEach(tsym => {
-                    let value = transaction.quantity * fsymInfo[tsym].PRICE;
-                    let cost = transaction.quantity * transaction.book_price * transaction.historical_price[tsym];
-                    let profit = value - cost;
-                    let profit_pct = profit / cost * 100;
-                    transaction[tsym] = {
-                        market_price: fsymInfo[tsym].PRICE,
-                        change24: round(fsymInfo[tsym].CHANGEPCT24HOUR),
-                        volume24: round(fsymInfo[tsym].VOLUME24HOURTO),
-                        value: round(value),
-                        cost: round(cost),
-                        profit: round(profit),
-                        profit_pct: round(profit_pct),
-                    };
+                    if (transaction.action === 'BUY') {
+                        let value = transaction.quantity * fsymInfo[tsym].PRICE;
+                        let cost = transaction.quantity * transaction.book_price * transaction.historical_price[tsym];
+                        let profit = value - cost;
+                        let profit_pct = profit / cost * 100;
+                        transaction[tsym] = {
+                            market_price: fsymInfo[tsym].PRICE,
+                            change24: round(fsymInfo[tsym].CHANGEPCT24HOUR),
+                            volume24: round(fsymInfo[tsym].VOLUME24HOURTO),
+                            value: round(value),
+                            cost: round(cost),
+                            profit: round(profit),
+                            profit_pct: round(profit_pct),
+                        };
+                    } else {
+                        let gain = transaction.quantity * transaction.book_price * transaction.historical_price[tsym];
+                        transaction[tsym] = {
+                            market_price: fsymInfo[tsym].PRICE,
+                            change24: round(fsymInfo[tsym].CHANGEPCT24HOUR),
+                            volume24: round(fsymInfo[tsym].VOLUME24HOURTO),
+                            gain: round(gain),
+                        };
+                    }
                     //fixme maybe slow
                 });
             });
-            res.json(transactions);
+            return transactions;
         })
         .catch(function (err) {
             // API call failed...
             console.log(err);
         });
 };
+
+exports.priceLive = function(currencies) {
+    let tsyms = ['USD', 'EUR', 'BTC'];
+    let options = {
+        // https://min-api.cryptocompare.com/data/pricemulti?fsyms=ETH,DASH&tsyms=BTC,USD,EUR
+        uri: 'https://min-api.cryptocompare.com/data/pricemulti',
+        qs: {
+            fsyms: currencies,     // From Symbol
+            tsyms: tsyms.join(),   // To Symbols, include multiple symbols
+            e: 'CCCAGG',           // Name of exchange. Default: CCCAGG
+        },
+        headers: {
+            'User-Agent': 'Request-Promise'
+        },
+        json: true
+    };
+    return rp(options)
+        .then(matrixPrice => matrixPrice)
+        .catch(function (err) {
+            // API call failed...
+            console.log(err);
+        });
+};
+
 
 exports.historicalPrice = function(transaction) {
     let tsyms = ['USD', 'EUR', 'BTC'];

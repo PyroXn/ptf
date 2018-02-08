@@ -18,10 +18,10 @@ class PortfolioDashboard extends Component {
     }
 
     componentDidMount() {
-        console.log(this.props.match.params.id);
         if (this.props.match.params.id) {
             axios.get('/api/portfolio/' + this.props.match.params.id + '/detail')
                 .then(res => {
+                    console.log(res.data);
                     this.setState({holdings: res.data});
                 });
 
@@ -49,7 +49,7 @@ class PortfolioDashboard extends Component {
                         pathname: '/transaction/create',
                         state: { portfolioId: this.props.match.params.id }
                     }}>
-                    <Button raised color="primary">
+                    <Button variant="raised" color="primary">
                         Add Transaction
                     </Button>
                 </Link>
