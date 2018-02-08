@@ -14,6 +14,28 @@ class HoldingCard extends Component {
     }
 
     render() {
+        let card = null;
+        if (this.props.items.quantity === 0) {
+            card =
+                <CardContent>
+                    <Typography component="p">
+                        {`PROFIT : ${round(this.props.items.EUR.profit)} €`}
+                    </Typography>
+                </CardContent>;
+        } else {
+            card =
+                <CardContent>
+                    <Typography type="headline" component="h2">
+                        {`${round(this.props.items.quantity, 4)} ${this.props.items.currency.Symbol}`}
+                    </Typography>
+                    <Typography type="headline" component="h3">
+                        {`VALUE : ${round(this.props.items.EUR.value)} € COST : ${round(this.props.items.EUR.cost)} €`}
+                    </Typography>
+                    <Typography component="p">
+                        {`PROFIT : ${round(this.props.items.EUR.profit)} € / ${round(this.props.items.EUR.profit_pct)} %`}
+                    </Typography>
+                </CardContent>;
+        }
         return (
             <Link to={`/${this.props.portfolioId}/transactions/${this.props.items.currency._id}`} style={{textDecoration: 'none'}}>
                 <Card>
@@ -24,17 +46,7 @@ class HoldingCard extends Component {
                         title={this.props.items.currency.CoinName}
                         subheader={this.props.items.currency.Symbol}
                     />
-                    <CardContent>
-                        <Typography type="headline" component="h2">
-                            {`${round(this.props.items.quantity, 4)} ${this.props.items.currency.Symbol}`}
-                        </Typography>
-                        <Typography type="headline" component="h3">
-                            {`VALUE : ${round(this.props.items.EUR.value)} € COST : ${round(this.props.items.EUR.cost)} €`}
-                        </Typography>
-                        <Typography component="p">
-                            {`PROFIT : ${round(this.props.items.EUR.profit)} € / ${round(this.props.items.EUR.profit_pct)} %`}
-                        </Typography>
-                    </CardContent>
+                    {card}
                 </Card>
             </Link>
         );

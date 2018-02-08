@@ -102,7 +102,7 @@ class TransactionForm extends Component {
 
     render() {
         let tradingPairItems = '';
-        if(this.state.market.pairs) {
+        if(this.state.market && this.state.market.pairs) {
             tradingPairItems = Object.keys(this.state.market.pairs).map(key =>
                 this.state.market.pairs[key].map(value =>
                     <MenuItem key={value} value={value}>{key} / {value}</MenuItem>
