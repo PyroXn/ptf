@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
 import Button from 'material-ui/Button';
-import Add from 'material-ui-icons/Add';
 import IconButton from 'material-ui/IconButton';
 import EditIcon from 'material-ui-icons/Edit';
 import DeleteIcon from 'material-ui-icons/Delete';
@@ -66,11 +65,15 @@ class TransactionList extends Component {
         return (
 
             <div>
-                <Link to="/transaction/create">
-                    <Button variant="fab" color="primary" aria-label="add">
-                        <Add />
+                <Link to={{
+                    pathname: '/transaction/create',
+                    state: { portfolioId: this.props.match.params.portfolioId }
+                }}>
+                    <Button variant="raised" color="primary">
+                        Add Transaction
                     </Button>
                 </Link>
+
                 <Table>
                     <TableHead>
                         <TableRow>

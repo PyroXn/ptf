@@ -20,7 +20,6 @@ const Main = () => (
             <Route path='/portfolio/create' component={PortfolioForm}/>
             <Route path='/portfolio/edit/:id' component={PortfolioForm}/>
             <Route path='/portfolio/:id' component={PortfolioDashboard}/>
-            <Route path='/transactions' component={TransactionList}/>
             <Route path='/:portfolioId/transactions/:currencyId' component={TransactionList}/>
             <Route path='/transaction/create' component={TransactionForm}/>
             <Route path='/transaction/edit/:id' component={TransactionForm}/>

@@ -20,8 +20,9 @@ router.get('/:id/detail', function(req, res, next) {
         .exec(function (err, transactions) {
             if (err) return next(err);
             let holdings = Object.values(transactions.reduce((result, transaction) => {
-                if (!result[transaction.currency]) {
-                    result[transaction.currency] = {
+                let id = transaction.currency._id;
+                if (!result[id]) {
+                    result[id] = {
                         currency: transaction.currency,
                         quantity_buy: transaction.action === 'BUY' ? transaction.quantity : 0,
                         quantity_sell: transaction.action === 'BUY' ? 0 : transaction.quantity,
@@ -40,18 +41,18 @@ router.get('/:id/detail', function(req, res, next) {
                     }
                 } else {
                     if (transaction.action === 'BUY') {
-                        result[transaction.currency].USD.avg_buy = (result[transaction.currency].USD.avg_buy * result[transaction.currency].quantity_buy + transaction.book_price * transaction.historical_price.USD * transaction.quantity) / (result[transaction.currency].quantity_buy + transaction.quantity);
-                        result[transaction.currency].EUR.avg_buy = (result[transaction.currency].EUR.avg_buy * result[transaction.currency].quantity_buy + transaction.book_price * transaction.historical_price.EUR * transaction.quantity) / (result[transaction.currency].quantity_buy + transaction.quantity);
-                        result[transaction.currency].BTC.avg_buy = (result[transaction.currency].BTC.avg_buy * result[transaction.currency].quantity_buy + transaction.book_price * transaction.historical_price.BTC * transaction.quantity) / (result[transaction.currency].quantity_buy + transaction.quantity);
+                        result[id].USD.avg_buy = (result[id].USD.avg_buy * result[id].quantity_buy + transaction.book_price * transaction.historical_price.USD * transaction.quantity) / (result[id].quantity_buy + transaction.quantity);
+                        result[id].EUR.avg_buy = (result[id].EUR.avg_buy * result[id].quantity_buy + transaction.book_price * transaction.historical_price.EUR * transaction.quantity) / (result[id].quantity_buy + transaction.quantity);
+                        result[id].BTC.avg_buy = (result[id].BTC.avg_buy * result[id].quantity_buy + transaction.book_price * transaction.historical_price.BTC * transaction.quantity) / (result[id].quantity_buy + transaction.quantity);
 
-                        result[transaction.currency].quantity_buy += transaction.quantity;
+                        result[id].quantity_buy += transaction.quantity;
 
                     } else {
-                        result[transaction.currency].USD.avg_sell = (result[transaction.currency].USD.avg_sell * result[transaction.currency].quantity_sell + transaction.book_price * transaction.historical_price.USD * transaction.quantity) / (result[transaction.currency].quantity_sell + transaction.quantity);
-                        result[transaction.currency].EUR.avg_sell = (result[transaction.currency].EUR.avg_sell * result[transaction.currency].quantity_sell + transaction.book_price * transaction.historical_price.EUR * transaction.quantity) / (result[transaction.currency].quantity_sell + transaction.quantity);
-                        result[transaction.currency].BTC.avg_sell = (result[transaction.currency].BTC.avg_sell * result[transaction.currency].quantity_sell + transaction.book_price * transaction.historical_price.BTC * transaction.quantity) / (result[transaction.currency].quantity_sell + transaction.quantity);
+                        result[id].USD.avg_sell = (result[id].USD.avg_sell * result[id].quantity_sell + transaction.book_price * transaction.historical_price.USD * transaction.quantity) / (result[id].quantity_sell + transaction.quantity);
+                        result[id].EUR.avg_sell = (result[id].EUR.avg_sell * result[id].quantity_sell + transaction.book_price * transaction.historical_price.EUR * transaction.quantity) / (result[id].quantity_sell + transaction.quantity);
+                        result[id].BTC.avg_sell = (result[id].BTC.avg_sell * result[id].quantity_sell + transaction.book_price * transaction.historical_price.BTC * transaction.quantity) / (result[id].quantity_sell + transaction.quantity);
 
-                        result[transaction.currency].quantity_sell += transaction.quantity;
+                        result[id].quantity_sell += transaction.quantity;
                     }
 
                 }
