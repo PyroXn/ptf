@@ -64,7 +64,7 @@ class CurrencyList extends Component {
                     fullWidth={true}
                     filter={(searchText, key) => true} />
                 <Button label="Force update" primary={true} onClick={this.forceCurrencyUpdate} />*/}
-                <Button variant="raised" color="primary" onClick={this.forceCurrencyUpdate}>
+                <Button variant="raised" color="secondary" onClick={this.forceCurrencyUpdate}>
                     Force update
                 </Button>
                 <Table>

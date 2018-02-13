@@ -10,6 +10,7 @@ var currency = require('./routes/currency');
 var transaction = require('./routes/transaction');
 var portfolio = require('./routes/portfolio');
 var market = require('./routes/market');
+var user = require('./routes/user');
 var app = express();
 
 var mongoose = require('mongoose');
@@ -28,6 +29,7 @@ app.use('/api/transaction', transaction);
 app.use('/api/currency', currency);
 app.use('/api/portfolio', portfolio);
 app.use('/api/market', market);
+app.use('/api/user', user);
 
 app.use('*', (req, res) => {
     res.sendFile(path.join(__dirname, '/build/index.html'));

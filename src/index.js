@@ -3,8 +3,9 @@ import {render} from 'react-dom'
 import {BrowserRouter} from 'react-router-dom'
 import App from './App';
 import {MuiThemeProvider, createMuiTheme} from "material-ui/styles/index";
-import blue from 'material-ui/colors/blue';
+import grey from 'material-ui/colors/grey';
 import red from 'material-ui/colors/red';
+import brown from 'material-ui/colors/brown';
 import Reboot from 'material-ui/Reboot';
 
 // A theme with custom primary and secondary color.
@@ -12,14 +13,16 @@ import Reboot from 'material-ui/Reboot';
 const theme = createMuiTheme({
     palette: {
         primary: {
-            light: blue[300],
-            main: blue[500],
-            dark: blue[700],
+            light: grey[300],
+            main: grey[900],
+            dark: grey[900],
+            contrastText: brown[50],
         },
         secondary: {
             light: red[300],
             main: red[500],
             dark: red[700],
+            contrastText: brown[50],
         },
     },
 });

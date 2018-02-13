@@ -6,9 +6,9 @@ const currencyUtil = require('../util/currencyUtil');
 
 /* GET ALL PORTFOLIOS */
 router.get('/', function(req, res, next) {
-    Portfolio.find(function (err, products) {
+    Portfolio.find(function (err, portfolios) {
         if (err) return next(err);
-        res.json(products);
+        res.json(portfolios);
     });
 });
 
@@ -94,6 +94,23 @@ router.get('/:id', function(req, res, next) {
         .exec(function (err, post) {
             if (err) return next(err);
             res.json(post);
+        });
+});
+
+/* GET PORTFOLIO WITH TRANSACTION BY ID */
+router.get('/transaction/:id', function(req, res, next) {
+    Transaction
+        .find({portfolio: req.params.id})
+        .exec(function (err, transactions) {
+            if (err) return next(err);
+            Portfolio
+                .findById(req.params.id)
+                .lean()
+                .exec(function (err, portfolio) {
+                    if (err) return next(err);
+                    portfolio.transactions = transactions;
+                    res.json(portfolio);
+                });
         });
 });
 

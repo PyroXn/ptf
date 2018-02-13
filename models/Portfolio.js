@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const PortfolioSchema = new mongoose.Schema({
     name: String,
-    transactions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Transaction' }],
+    users: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
 });
 
 module.exports = mongoose.model('Portfolio', PortfolioSchema);
