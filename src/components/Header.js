@@ -1,5 +1,5 @@
 import React from 'react'
-import {Link} from 'react-router-dom'
+import {Link, withRouter} from 'react-router-dom'
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
@@ -58,6 +58,7 @@ class Header extends React.Component {
         localStorage.removeItem('user');
         this.setState({user: null});
         this.setState({ anchorLogoutMenu: null });
+        this.props.history.go("/");
     };
 
     openLoginDialog = () => {
@@ -84,6 +85,7 @@ class Header extends React.Component {
 
     userLogin = (user) => {
         this.setState({user: user});
+        this.props.history.go("/");
     };
 
     render() {
@@ -159,4 +161,4 @@ class Header extends React.Component {
     }
 }
 
-export default withStyles(styles)(Header);
+export default withStyles(styles)(withRouter(Header));

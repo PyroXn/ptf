@@ -49,7 +49,9 @@ class PortfolioList extends Component {
     getPortfolios() {
         axios.get('/api/portfolio')
             .then(res => {
-                res.data.sort((a, b) =>  b.users.indexOf(this.state.user._id) - a.users.indexOf(this.state.user._id));
+                if (this.state.user) {
+                    res.data.sort((a, b) =>  b.users.indexOf(this.state.user._id) - a.users.indexOf(this.state.user._id));
+                }
                 this.setState({portfolios: res.data});
             });
     }
@@ -77,22 +79,26 @@ class PortfolioList extends Component {
     };
 
     saveFavorite = (portfolio) => {
-        portfolio.users.push(this.state.user);
-        axios.put('/api/portfolio/'+portfolio._id, portfolio)
-            .then(() => {
-                this.getPortfolios();
-            });
+        if (this.state.user) {
+            portfolio.users.push(this.state.user);
+            axios.put('/api/portfolio/' + portfolio._id, portfolio)
+                .then(() => {
+                    this.getPortfolios();
+                });
+        }
     };
 
     saveUnfavorite = (portfolio) => {
-        const index = portfolio.users.indexOf(this.state.user._id);
-        if (index > -1) {
-            portfolio.users.splice(index, 1);
+        if (this.state.user) {
+            const index = portfolio.users.indexOf(this.state.user._id);
+            if (index > -1) {
+                portfolio.users.splice(index, 1);
+            }
+            axios.put('/api/portfolio/' + portfolio._id, portfolio)
+                .then(() => {
+                    this.getPortfolios();
+                });
         }
-        axios.put('/api/portfolio/'+portfolio._id, portfolio)
-            .then(() => {
-                this.getPortfolios();
-            });
     };
 
     render() {
@@ -108,15 +114,20 @@ class PortfolioList extends Component {
                             <VisibilityIcon />
                         </IconButton>
                     </Link>
-                    {portfolio.users.includes(this.state.user._id) ? (
-                        <IconButton color="primary" aria-label="favorite" onClick={this.saveUnfavorite.bind(this, portfolio)}>
-                            <Star />
-                        </IconButton>
-                    ) : (
-                        <IconButton color="primary" aria-label="favorite" onClick={this.saveFavorite.bind(this, portfolio)}>
-                            <StarBorder />
-                        </IconButton>
-                    )}
+                    {this.state.user &&
+                        <span>
+                            {portfolio.users.includes(this.state.user._id) ? (
+                                <IconButton color="primary" aria-label="favorite" onClick={this.saveUnfavorite.bind(this, portfolio)}>
+                                    <Star />
+                                </IconButton>
+                            ) : (
+                                <IconButton color="primary" aria-label="favorite" onClick={this.saveFavorite.bind(this, portfolio)}>
+                                    <StarBorder />
+                                </IconButton>
+                            )}
+                        </span>
+                    }
+
 
                     <IconButton color="primary" aria-label="edit" onClick={this.openPortfolioDialog.bind(this, portfolio._id)}>
                         <EditIcon />
