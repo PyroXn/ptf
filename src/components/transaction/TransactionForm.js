@@ -162,7 +162,7 @@ class TransactionForm extends Component {
                         shrink: true,
                     }}
                 />
-                <Button variant="raised" type="submit" color="primary">
+                <Button variant="raised" type="submit" color="secondary">
                     Save
                 </Button>
             </form>

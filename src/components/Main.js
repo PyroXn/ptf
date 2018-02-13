@@ -4,7 +4,6 @@ import TransactionList from "./transaction/TransactionList";
 import TransactionForm from "./transaction/TransactionForm";
 import CurrencyList from "./currency/CurrencyList";
 import PortfolioList from "./portfolio/PortfolioList";
-import PortfolioForm from "./portfolio/PortfolioForm";
 import PortfolioDashboard from "./portfolio/PortfolioDashboard";
 
 // The Main component renders one of the three provided
@@ -17,8 +16,6 @@ const Main = () => (
         <Switch>
             <Route exact path='/' component={PortfolioList}/>
             <Route path='/portfolios' component={PortfolioList}/>
-            <Route path='/portfolio/create' component={PortfolioForm}/>
-            <Route path='/portfolio/edit/:id' component={PortfolioForm}/>
             <Route path='/portfolio/:id' component={PortfolioDashboard}/>
             <Route path='/:portfolioId/transactions/:currencyId' component={TransactionList}/>
             <Route path='/transaction/create' component={TransactionForm}/>

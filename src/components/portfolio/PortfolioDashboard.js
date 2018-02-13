@@ -5,7 +5,26 @@ import HoldingCard from "../holding/HoldingCard";
 import PortfolioRepartitionChart from "./PortfolioRepartitionChart";
 import {round} from "../util/NumberUtil";
 import Button from 'material-ui/Button';
+import { withStyles } from 'material-ui/styles';
+import Grid from 'material-ui/Grid';
+import AddCircleOutline from 'material-ui-icons/AddCircleOutline';
 
+const styles = theme => ({
+    root: {
+        flexGrow: 1,
+        padding: 24,
+    },
+    link: {
+        textDecoration: 'none',
+        outline: 'none',
+    },
+    button: {
+        margin: theme.spacing.unit,
+    },
+    rightIcon: {
+        marginLeft: theme.spacing.unit,
+    },
+});
 
 class PortfolioDashboard extends Component {
     constructor(props) {
@@ -21,7 +40,7 @@ class PortfolioDashboard extends Component {
         if (this.props.match.params.id) {
             axios.get('/api/portfolio/' + this.props.match.params.id + '/detail')
                 .then(res => {
-                    console.log(res.data);
+                    res.data.sort((a, b) =>  b.EUR.value - a.EUR.value);
                     this.setState({holdings: res.data});
                 });
 
@@ -34,8 +53,11 @@ class PortfolioDashboard extends Component {
     }
 
     render() {
+        const { classes } = this.props;
         const listHoldingCard = this.state.holdings.map(holding =>
-            <HoldingCard key={holding.currency._id} items={holding} portfolioId={this.props.match.params.id}/>
+            <Grid key={holding.currency._id} item xs={12} sm={6} md={3}>
+                <HoldingCard items={holding} portfolioId={this.props.match.params.id}/>
+            </Grid>
         );
 
         let totalValue = round(this.state.holdings.reduce(function(total, holding) { return total + holding.EUR.value }, 0));
@@ -48,9 +70,10 @@ class PortfolioDashboard extends Component {
                 <Link to={{
                         pathname: '/transaction/create',
                         state: { portfolioId: this.props.match.params.id }
-                    }}>
-                    <Button variant="raised" color="primary">
+                    }} className={classes.link}>
+                    <Button variant="raised" color="secondary" aria-label="add" className={classes.button}>
                         Add Transaction
+                        <AddCircleOutline className={classes.rightIcon}/>
                     </Button>
                 </Link>
 
@@ -66,10 +89,14 @@ class PortfolioDashboard extends Component {
                 <div>
                     <PortfolioRepartitionChart items={this.state.holdings}/>
                 </div>
-                {listHoldingCard}
+                <div className={classes.root}>
+                    <Grid container spacing={24}>
+                        {listHoldingCard}
+                    </Grid>
+                </div>
             </div>
         );
     }
 }
 
-export default PortfolioDashboard;
+export default withStyles(styles)(PortfolioDashboard);

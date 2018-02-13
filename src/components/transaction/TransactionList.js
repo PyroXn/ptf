@@ -69,7 +69,7 @@ class TransactionList extends Component {
                     pathname: '/transaction/create',
                     state: { portfolioId: this.props.match.params.portfolioId }
                 }}>
-                    <Button variant="raised" color="primary">
+                    <Button variant="raised" color="secondary">
                         Add Transaction
                     </Button>
                 </Link>
