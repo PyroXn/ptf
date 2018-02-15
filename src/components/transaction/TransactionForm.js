@@ -9,14 +9,32 @@ import {InputLabel} from 'material-ui/Input';
 import { Async } from 'react-select';
 import 'react-select/dist/react-select.css';
 import {inputDate} from "../util/DateUtil";
+import {withStyles} from "material-ui/styles/index";
+import Grid from 'material-ui/Grid';
+
+const styles = theme => ({
+    field: {
+        width: '100%',
+    },
+    select: {
+        marginTop: theme.spacing.unit * 2,
+        width: '100%',
+    },
+    form: {
+        margin: theme.spacing.unit,
+        display: 'flex',
+        flexWrap: 'wrap',
+    },
+});
+
 
 class TransactionForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            currency: {},
+            currency: null,
             action: 'BUY',
-            market: {},
+            market: null,
             trading_pair: '',
             book_price: 0,
             quantity: 0,
@@ -101,6 +119,7 @@ class TransactionForm extends Component {
 
 
     render() {
+        const { classes } = this.props;
         let tradingPairItems = '';
         if(this.state.market && this.state.market.pairs) {
             tradingPairItems = Object.keys(this.state.market.pairs).map(key =>
@@ -111,63 +130,93 @@ class TransactionForm extends Component {
         }
 
         return (
-            <form onSubmit={this.handleSubmit}>
-                <Async value={this.state.currency}
-                                onChange={(response) => this.setState({ currency: response})}
-                                valueKey="_id"
-                                labelKey="FullName"
-                                loadOptions={this.searchCurrency}
-                                backspaceRemoves={true}/>
-                <FormControl>
-                    <InputLabel htmlFor="action">Action</InputLabel>
-                    <Select value={this.state.action} onChange={this.handleChange}
-                            inputProps={{
-                                name: 'action',
-                                id: 'action',
-                            }}>
-                        <MenuItem value={'BUY'}>Buy</MenuItem>
-                        <MenuItem value={'SELL'}>Sell</MenuItem>
-                    </Select>
-                </FormControl>
-                <Async value={this.state.market}
-                       onChange={(response) => this.setState({ market: response})}
-                       valueKey="_id"
-                       labelKey="name"
-                       loadOptions={this.searchMarket}
-                       backspaceRemoves={true}/>
+            <form onSubmit={this.handleSubmit} className={classes.form}>
+                <Grid container spacing={24}>
+                    <Grid item xs={12} sm={6} md={3}>
+                        <Async value={this.state.currency}
+                               onChange={(response) => this.setState({ currency: response})}
+                               valueKey="_id"
+                               labelKey="FullName"
+                               placeholder="Currency"
+                               loadOptions={this.searchCurrency}
+                               backspaceRemoves={true}
+                               className={classes.select}
+                        />
+                    </Grid>
 
-                <FormControl>
-                    <InputLabel htmlFor="pairs">Trading Pair</InputLabel>
-                    <Select value={this.state.trading_pair} onChange={this.handleChange}
-                            inputProps={{
-                                name: 'trading_pair',
-                                id: 'trading_pair',
-                            }}>
-                        <MenuItem value="">
-                            <em>None</em>
-                        </MenuItem>
-                        {tradingPairItems}
-                    </Select>
-                </FormControl>
+                    <Grid item xs={12} sm={6} md={3}>
+                        <FormControl className={classes.field}>
+                            <InputLabel htmlFor="action">Action</InputLabel>
+                            <Select value={this.state.action} onChange={this.handleChange}
+                                    inputProps={{
+                                        name: 'action',
+                                        id: 'action',
+                                    }}>
+                                <MenuItem value={'BUY'}>Buy</MenuItem>
+                                <MenuItem value={'SELL'}>Sell</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Grid>
 
-                <TextField label="Book Price" name="book_price" value={this.state.book_price} onChange={this.handleChange} />
-                <TextField label="Quantity" name="quantity" value={this.state.quantity} onChange={this.handleChange} />
-                <TextField
-                    label="Date"
-                    name="date"
-                    type="datetime-local"
-                    defaultValue={this.state.date}
-                    onChange={this.handleChange}
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
-                />
-                <Button variant="raised" type="submit" color="secondary">
-                    Save
-                </Button>
+                    <Grid item xs={12} sm={6} md={3}>
+                        <Async value={this.state.market}
+                               onChange={(response) => this.setState({ market: response})}
+                               valueKey="_id"
+                               labelKey="name"
+                               placeholder="Market"
+                               loadOptions={this.searchMarket}
+                               backspaceRemoves={true}
+                               className={classes.select}
+                        />
+                    </Grid>
+
+                    <Grid item xs={12} sm={6} md={3}>
+                        <FormControl className={classes.field}>
+                            <InputLabel htmlFor="pairs">Trading Pair</InputLabel>
+                            <Select value={this.state.trading_pair} onChange={this.handleChange}
+                                    inputProps={{
+                                        name: 'trading_pair',
+                                        id: 'trading_pair',
+                                    }}>
+                                <MenuItem value="">
+                                    <em>None</em>
+                                </MenuItem>
+                                {tradingPairItems}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+
+                    <Grid item xs={12} sm={6} md={3}>
+                        <TextField label="Book Price" name="book_price" value={this.state.book_price} onChange={this.handleChange} className={classes.field} />
+                    </Grid>
+
+                    <Grid item xs={12} sm={6} md={3}>
+                        <TextField label="Quantity" name="quantity" value={this.state.quantity} onChange={this.handleChange} className={classes.field} />
+                    </Grid>
+
+                    <Grid item xs={12} sm={6} md={3}>
+                        <TextField
+                            label="Date"
+                            name="date"
+                            type="datetime-local"
+                            defaultValue={this.state.date}
+                            onChange={this.handleChange}
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                            className={classes.field}
+                        />
+                    </Grid>
+
+                    <Grid item xs={12} sm={6} md={3}>
+                        <Button variant="raised" type="submit" color="secondary" className={classes.select}>
+                            Save
+                        </Button>
+                    </Grid>
+                </Grid>
             </form>
         );
     }
 }
 
-export default TransactionForm;
+export default withStyles(styles)(TransactionForm);

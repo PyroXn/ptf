@@ -6,7 +6,22 @@ import IconButton from 'material-ui/IconButton';
 import EditIcon from 'material-ui-icons/Edit';
 import DeleteIcon from 'material-ui-icons/Delete';
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
+import AddCircleOutline from 'material-ui-icons/AddCircleOutline';
+import {withStyles} from "material-ui/styles/index";
 
+
+const styles = theme => ({
+    link: {
+        textDecoration: 'none',
+        outline: 'none',
+    },
+    button: {
+        margin: theme.spacing.unit,
+    },
+    rightIcon: {
+        marginLeft: theme.spacing.unit,
+    },
+});
 class TransactionList extends Component {
 
     constructor(props) {
@@ -17,6 +32,10 @@ class TransactionList extends Component {
     }
 
     componentDidMount() {
+        this.loadTransactions();
+    }
+
+    loadTransactions() {
         axios.get(`/api/transaction/${this.props.match.params.portfolioId}/${this.props.match.params.currencyId}`)
             .then(res => {
                 this.setState({transactions: res.data});
@@ -26,11 +45,16 @@ class TransactionList extends Component {
     delete(id){
         axios.delete('/api/transaction/'+id)
             .then(() => {
-                this.props.history.push("/")
+                if (this.state.transactions.length === 1) {
+                    this.props.history.go(-1);
+                } else {
+                    this.loadTransactions();
+                }
             });
     }
 
     render() {
+        const { classes } = this.props;
         const listItems = this.state.transactions.map(transaction =>
             <TableRow key={transaction._id}>
                 <TableCell>{transaction.currency.FullName}</TableCell>
@@ -65,12 +89,16 @@ class TransactionList extends Component {
         return (
 
             <div>
-                <Link to={{
-                    pathname: '/transaction/create',
-                    state: { portfolioId: this.props.match.params.portfolioId }
-                }}>
-                    <Button variant="raised" color="secondary">
+                <Link
+                    to={{
+                        pathname: '/transaction/create',
+                        state: { portfolioId: this.props.match.params.portfolioId }
+                    }}
+                    className={classes.link}
+                >
+                    <Button variant="raised" color="secondary" aria-label="add" className={classes.button}>
                         Add Transaction
+                        <AddCircleOutline className={classes.rightIcon}/>
                     </Button>
                 </Link>
 
@@ -106,4 +134,4 @@ class TransactionList extends Component {
     }
 }
 
-export default TransactionList;
+export default withStyles(styles)(TransactionList);
