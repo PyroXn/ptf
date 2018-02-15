@@ -88,7 +88,7 @@ class PortfolioDashboard extends Component {
                     {totalValue} €
                 </Typography>
                 <Typography variant="subheading" align="center">
-                    {totalProfit < 0 ? '-' : ''} <NumberHighlight number={totalProfit} suffix={'€'} /> (<NumberHighlight number={totalProfit/totalCost*100} suffix={'%'} />)
+                    <NumberHighlight number={totalProfit} suffix={'€'} /> (<NumberHighlight number={totalProfit/totalCost*100} suffix={'%'} />)
                 </Typography>
                 <div>
                     <PortfolioRepartitionChart items={this.state.holdings}/>
