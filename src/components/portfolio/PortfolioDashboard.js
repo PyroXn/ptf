@@ -8,6 +8,8 @@ import Button from 'material-ui/Button';
 import { withStyles } from 'material-ui/styles';
 import Grid from 'material-ui/Grid';
 import AddCircleOutline from 'material-ui-icons/AddCircleOutline';
+import NumberHighlight from "../shared/NumberHighlight";
+import Typography from 'material-ui/Typography';
 
 const styles = theme => ({
     root: {
@@ -17,6 +19,9 @@ const styles = theme => ({
     link: {
         textDecoration: 'none',
         outline: 'none',
+    },
+    title: {
+        margin: theme.spacing.unit,
     },
     button: {
         margin: theme.spacing.unit,
@@ -66,7 +71,9 @@ class PortfolioDashboard extends Component {
 
         return (
             <div>
-                <h2>{this.state.name}</h2>
+                <Typography variant="title" align="left" className={classes.title}>
+                    {this.state.name}
+                </Typography>
                 <Link to={{
                         pathname: '/transaction/create',
                         state: { portfolioId: this.props.match.params.id }
@@ -77,15 +84,12 @@ class PortfolioDashboard extends Component {
                     </Button>
                 </Link>
 
-                <div>
-                    Cost : {totalCost} €
-                </div>
-                <div>
-                    Total value : {totalValue} €
-                </div>
-                <div>
-                    Gains and losses : {totalProfit} € ({round(totalProfit/totalCost*100)} %)
-                </div>
+                <Typography variant="title" align="center">
+                    {totalValue} €
+                </Typography>
+                <Typography variant="subheading" align="center">
+                    {totalProfit < 0 ? '-' : ''} <NumberHighlight number={totalProfit} suffix={'€'} /> (<NumberHighlight number={totalProfit/totalCost*100} suffix={'%'} />)
+                </Typography>
                 <div>
                     <PortfolioRepartitionChart items={this.state.holdings}/>
                 </div>

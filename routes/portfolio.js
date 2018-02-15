@@ -64,18 +64,21 @@ router.get('/:id/detail', function(req, res, next) {
                 holdings.map(holding => {
                     holding.quantity = holding.quantity_buy - holding.quantity_sell;
                     holding.USD = {
+                        price: priceMatrix[holding.currency.Symbol].USD,
                         value: holding.quantity * priceMatrix[holding.currency.Symbol].USD,
                         cost: holding.USD.avg_buy * holding.quantity_buy - holding.USD.avg_sell * holding.quantity_sell,
                         profit: holding.quantity * priceMatrix[holding.currency.Symbol].USD - (holding.USD.avg_buy * holding.quantity_buy - holding.USD.avg_sell * holding.quantity_sell),
                         profit_pct: (holding.quantity * priceMatrix[holding.currency.Symbol].USD - (holding.USD.avg_buy * holding.quantity_buy - holding.USD.avg_sell * holding.quantity_sell)) / ((holding.USD.avg_buy * holding.quantity_buy - holding.USD.avg_sell * holding.quantity_sell) / 100),
                     };
                     holding.EUR = {
+                        price: priceMatrix[holding.currency.Symbol].EUR,
                         value: holding.quantity * priceMatrix[holding.currency.Symbol].EUR,
                         cost: holding.EUR.avg_buy * holding.quantity_buy - holding.EUR.avg_sell * holding.quantity_sell,
                         profit: holding.quantity * priceMatrix[holding.currency.Symbol].EUR - (holding.EUR.avg_buy * holding.quantity_buy - holding.EUR.avg_sell * holding.quantity_sell),
                         profit_pct: (holding.quantity * priceMatrix[holding.currency.Symbol].EUR - (holding.EUR.avg_buy * holding.quantity_buy - holding.EUR.avg_sell * holding.quantity_sell)) / ((holding.EUR.avg_buy * holding.quantity_buy - holding.EUR.avg_sell * holding.quantity_sell) / 100),
                     };
                     holding.BTC = {
+                        price: priceMatrix[holding.currency.Symbol].BTC,
                         value: holding.quantity * priceMatrix[holding.currency.Symbol].BTC,
                         cost: holding.BTC.avg_buy * holding.quantity_buy - holding.BTC.avg_sell * holding.quantity_sell,
                         profit: holding.quantity * priceMatrix[holding.currency.Symbol].BTC - (holding.BTC.avg_buy * holding.quantity_buy - holding.BTC.avg_sell * holding.quantity_sell),
