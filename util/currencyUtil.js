@@ -177,3 +177,67 @@ exports.historicalPrice = function(transaction) {
 
 };
 
+
+exports.historicalData = function(currency) {
+    let tsyms = ['USD', 'EUR', 'BTC'];
+    let requests = [];
+
+    tsyms.forEach(tsym => {
+        let options = {
+            // https://min-api.cryptocompare.com/data/histohour?fsym=BTC&tsym=ETH
+            uri: 'https://min-api.cryptocompare.com/data/histohour',
+            qs: {
+                fsym: currency,               // From Symbol
+                tsym: tsym,                   // To Symbols, include multiple symbols
+            },
+            headers: {
+                'User-Agent': 'Request-Promise'
+            },
+            json: true,
+            transform: function (body) {
+                body.Data.tsym = tsym;
+                return body.Data;
+            }
+        };
+        requests.push(rp(options));
+    });
+
+    let historicalDataByCurrency = [];
+
+    return Promise.all(requests).then(function(values) {
+        values.forEach(value => {
+            value.forEach(histohourData => {
+                const index = historicalDataByCurrency.map(value => value.time).indexOf(histohourData.time);
+                if (index > -1) {
+                    historicalDataByCurrency[index][value.tsym] =  {
+                        price: histohourData.close
+                    };
+                } else {
+                    let historicalData = {};
+                    historicalData.time = histohourData.time;
+                    historicalData.currency = currency;
+                    historicalData[value.tsym] = {
+                        price: histohourData.close
+                    };
+                    historicalDataByCurrency.push(historicalData);
+                }
+            });
+        });
+        return historicalDataByCurrency;
+    });
+
+    // let historicalData = {
+    //     currency: currency,
+    //     time: 1445040000.0,
+    //     USD: {
+    //         "close": 270.51,
+    //     },
+    //     EUR: {
+    //         "close": 270.51,
+    //     },
+    //     BTC: {
+    //         "close": 270.51,
+    //     }
+    // };
+};
+// https://min-api.cryptocompare.com/data/histohour?fsym=BTC&tsym=ETH

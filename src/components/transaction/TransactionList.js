@@ -8,6 +8,7 @@ import DeleteIcon from 'material-ui-icons/Delete';
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 import AddCircleOutline from 'material-ui-icons/AddCircleOutline';
 import {withStyles} from "material-ui/styles/index";
+import CurrencyHistoricalChart from "../currency/CurrencyHistoricalChart";
 
 
 const styles = theme => ({
@@ -27,6 +28,7 @@ class TransactionList extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            currency: null,
             transactions: []
         };
     }
@@ -38,6 +40,9 @@ class TransactionList extends Component {
     loadTransactions() {
         axios.get(`/api/transaction/${this.props.match.params.portfolioId}/${this.props.match.params.currencyId}`)
             .then(res => {
+                if (res.data && res.data.length > 0) {
+                    this.setState({currency: res.data[0].currency});
+                }
                 this.setState({transactions: res.data});
             });
     }
@@ -89,6 +94,9 @@ class TransactionList extends Component {
         return (
 
             <div>
+                <div className={classes.button}>
+                    <CurrencyHistoricalChart currency={this.state.currency} />
+                </div>
                 <Link
                     to={{
                         pathname: '/transaction/create',

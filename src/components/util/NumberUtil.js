@@ -2,4 +2,8 @@ function round(num, decimal = 2) {
     return parseFloat(num.toFixed(decimal));
 }
 
-export { round };
+function getRandomInt(max) {
+    return Math.floor(Math.random() * Math.floor(max));
+}
+
+export { round, getRandomInt };
