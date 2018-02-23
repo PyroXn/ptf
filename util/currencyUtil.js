@@ -178,18 +178,49 @@ exports.historicalPrice = function(transaction) {
 };
 
 
-exports.historicalData = function(currency) {
+exports.historicalData = function(currency, scale = 'W') {
     let tsyms = ['USD', 'EUR', 'BTC'];
     let requests = [];
 
+    let url;
+    let qs = {
+        fsym: currency,               // From Symbol
+    };
+    switch (scale) {
+        case 'H':
+            url = 'https://min-api.cryptocompare.com/data/histominute';
+            qs.limit = 60;
+            break;
+        case 'D':
+            url = 'https://min-api.cryptocompare.com/data/histominute';
+            qs.aggregate = 10;
+            qs.limit = 144;
+            break;
+        case 'W':
+            url = 'https://min-api.cryptocompare.com/data/histohour';
+            break;
+        case 'M':
+            url = 'https://min-api.cryptocompare.com/data/histoday';
+            break;
+    }
+
+    // H
+    // https://min-api.cryptocompare.com/data/histominute?fsym=BTC&tsym=USD&limit=60
+
+    // D
+    // https://min-api.cryptocompare.com/data/histominute?fsym=BTC&tsym=USD&aggregate=10&limit=144
+
+    // W
+    // https://min-api.cryptocompare.com/data/histohour?fsym=BTC&tsym=ETH
+
+    // M
+    // https://min-api.cryptocompare.com/data/histoday?fsym=BTC&tsym=USD
+
     tsyms.forEach(tsym => {
+        qs.tsym = tsym;
         let options = {
-            // https://min-api.cryptocompare.com/data/histohour?fsym=BTC&tsym=ETH
-            uri: 'https://min-api.cryptocompare.com/data/histohour',
-            qs: {
-                fsym: currency,               // From Symbol
-                tsym: tsym,                   // To Symbols, include multiple symbols
-            },
+            uri: url,
+            qs: qs,
             headers: {
                 'User-Agent': 'Request-Promise'
             },
@@ -202,29 +233,7 @@ exports.historicalData = function(currency) {
         requests.push(rp(options));
     });
 
-    let historicalDataByCurrency = [];
-
-    return Promise.all(requests).then(function(values) {
-        values.forEach(value => {
-            value.forEach(histohourData => {
-                const index = historicalDataByCurrency.map(value => value.time).indexOf(histohourData.time);
-                if (index > -1) {
-                    historicalDataByCurrency[index][value.tsym] =  {
-                        price: histohourData.close
-                    };
-                } else {
-                    let historicalData = {};
-                    historicalData.time = histohourData.time;
-                    historicalData.currency = currency;
-                    historicalData[value.tsym] = {
-                        price: histohourData.close
-                    };
-                    historicalDataByCurrency.push(historicalData);
-                }
-            });
-        });
-        return historicalDataByCurrency;
-    });
+    return this.parseHistoricalData(requests, currency);
 
     // let historicalData = {
     //     currency: currency,
@@ -240,4 +249,29 @@ exports.historicalData = function(currency) {
     //     }
     // };
 };
-// https://min-api.cryptocompare.com/data/histohour?fsym=BTC&tsym=ETH
+
+exports.parseHistoricalData = function (requests, currency) {
+    let historicalDataByCurrency = [];
+
+    return Promise.all(requests).then(function (values) {
+        values.forEach(value => {
+            value.forEach(histoData => {
+                const index = historicalDataByCurrency.map(value => value.time).indexOf(histoData.time);
+                if (index > -1) {
+                    historicalDataByCurrency[index][value.tsym] = {
+                        price: histoData.close
+                    };
+                } else {
+                    let historicalData = {};
+                    historicalData.time = histoData.time;
+                    historicalData.currency = currency;
+                    historicalData[value.tsym] = {
+                        price: histoData.close
+                    };
+                    historicalDataByCurrency.push(historicalData);
+                }
+            });
+        });
+        return historicalDataByCurrency;
+    });
+};
