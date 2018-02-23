@@ -2,24 +2,25 @@ import React, {Component} from 'react';
 import {Line} from 'react-chartjs-2';
 import axios from "axios/index";
 import {getRandomInt} from "../util/NumberUtil";
+import {palette} from "../util/ChartUtil";
+import Radio, {RadioGroup} from 'material-ui/Radio';
+import {FormControlLabel} from 'material-ui/Form';
+import {withStyles} from "material-ui/styles/index";
 
-const palette = [
-    '#ff0029', '#377eb8', '#66a61e', '#984ea3', '#00d2d5', '#ff7f00', '#af8d00',
-    '#7f80cd', '#b3e900', '#c42e60', '#a65628', '#f781bf', '#8dd3c7', '#bebada',
-    '#fb8072', '#80b1d3', '#fdb462', '#fccde5', '#bc80bd', '#ffed6f', '#c4eaff',
-    '#cf8c00', '#1b9e77', '#d95f02', '#e7298a', '#e6ab02', '#a6761d', '#0097ff',
-    '#00d067', '#000000', '#252525', '#525252', '#737373', '#969696', '#bdbdbd',
-    '#f43600', '#4ba93b', '#5779bb', '#927acc', '#97ee3f', '#bf3947', '#9f5b00',
-    '#f48758', '#8caed6', '#f2b94f', '#eff26e', '#e43872', '#d9b100', '#9d7a00',
-    '#698cff', '#d9d9d9', '#00d27e', '#d06800', '#009f82', '#c49200', '#cbe8ff',
-    '#fecddf', '#c27eb6', '#8cd2ce', '#c4b8d9', '#f883b0', '#a49100', '#f48800',
-    '#27d0df', '#a04a9b'];
+const styles = theme => ({
+    inline: {
+        flexDirection: 'row',
+    },
+});
 
 class CurrencyHistoricalChart extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            currencyFiat: 'EUR',
+            scale: 'W',
             currency: null,
+            historicalData: null,
             data: {
                 labels: '',
                 datasets: []
@@ -67,44 +68,91 @@ class CurrencyHistoricalChart extends Component {
                 },
                 maintainAspectRatio: false
             }
-        }
+        };
     }
 
-    getHistorical(currency) {
-        axios.get('/api/historical/' + currency.Symbol)
+    getHistorical() {
+        axios.get(`/api/historical/${this.state.currency.Symbol}/${this.state.scale}`)
             .then(res => {
-                let labels = res.data.map(historical => new Date(historical.time*1000));
-                let datasets = this.state.data.datasets;
-                datasets.push({
-                    label: currency.Symbol,
-                    fill: true,
-                    backgroundColor: palette[getRandomInt(72)],
-                    data: res.data.map(historical => historical.EUR.price),
+                this.setState({historicalData: res.data}, () => {
+                    this.uploadChartData();
                 });
-                let data = {
-                    labels: labels,
-                    datasets: datasets,
-                };
-                this.setState({'data': data});
             });
     }
 
+    uploadChartData() {
+        let labels = this.state.historicalData.map(historical => new Date(historical.time * 1000));
+        let datasets = [];
+        datasets.push({
+            label: this.state.currency.Symbol,
+            fill: true,
+            backgroundColor: palette[getRandomInt(72)],
+            data: this.state.historicalData.map(historical => historical[this.state.currencyFiat].price),
+        });
+        let data = {
+            labels: labels,
+            datasets: datasets,
+        };
+        this.setState({data: data});
+    };
+
     componentWillReceiveProps(nextProps) {
         if (nextProps && nextProps.currency && this.state.currency !== nextProps.currency) {
-            this.setState({currency: nextProps.currency});
-            this.getHistorical(nextProps.currency);
+            this.setState({currency: nextProps.currency}, () => {
+                this.getHistorical();
+            });
         }
     }
 
+    currencyFiatChange = (event, currencyFiat) => {
+        this.setState({currencyFiat: currencyFiat }, () => {
+            this.uploadChartData();
+        });
+    };
+
+    scaleChange = (event, scale) => {
+        this.setState({scale: scale }, () => {
+            this.getHistorical();
+        });
+    };
+
     render() {
+        const { classes } = this.props;
         return (
-            <Line data={this.state.data}
-                      options={this.state.options}
-                      width={100}
-                      height={300}
-            />
+            <div>
+                <RadioGroup
+                    aria-label="currency"
+                    name="currency"
+                    value={this.state.currencyFiat}
+                    onChange={this.currencyFiatChange}
+                    className={classes.inline}
+                >
+                    <FormControlLabel value="USD" control={<Radio />} label="USD" />
+                    <FormControlLabel value="EUR" control={<Radio />} label="EUR" />
+                    <FormControlLabel value="BTC" control={<Radio />} label="BTC" />
+                </RadioGroup>
+                <RadioGroup
+                    aria-label="scale"
+                    name="scale"
+                    value={this.state.scale}
+                    onChange={this.scaleChange}
+                    className={classes.inline}
+                >
+                    <FormControlLabel value="H" control={<Radio />} label="H" />
+                    <FormControlLabel value="D" control={<Radio />} label="D" />
+                    <FormControlLabel value="W" control={<Radio />} label="W" />
+                    <FormControlLabel value="M" control={<Radio />} label="M" />
+                </RadioGroup>
+                <div>
+                    <Line data={this.state.data}
+                              options={this.state.options}
+                              width={100}
+                              height={300}
+                    />
+                </div>
+            </div>
         );
     }
 }
 
-export default CurrencyHistoricalChart;
+export default withStyles(styles)(CurrencyHistoricalChart);
