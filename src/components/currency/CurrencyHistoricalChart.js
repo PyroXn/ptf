@@ -56,8 +56,8 @@ class CurrencyHistoricalChart extends Component {
                 tooltips: {
                     mode: 'x-axis',
                     callbacks: {
-                        label: function(tooltipItems) {
-                            return tooltipItems.yLabel + ' €';
+                        label: (tooltipItems) => {
+                            return tooltipItems.yLabel + (this.state.currencyFiat === 'USD' ? ' $' : this.state.currencyFiat === 'EUR' ? ' €' : ' \u20BF');
                         }
                     }
                 },
@@ -81,6 +81,9 @@ class CurrencyHistoricalChart extends Component {
     }
 
     uploadChartData() {
+        if (this.state.historicalData === null) {
+            return;
+        }
         let labels = this.state.historicalData.map(historical => new Date(historical.time * 1000));
         let datasets = [];
         datasets.push({
