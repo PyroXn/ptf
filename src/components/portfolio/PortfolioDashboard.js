@@ -5,7 +5,7 @@ import HoldingCard from "../holding/HoldingCard";
 import PortfolioRepartitionChart from "./PortfolioRepartitionChart";
 import {round} from "../util/NumberUtil";
 import Button from 'material-ui/Button';
-import { withStyles } from 'material-ui/styles';
+import {withStyles} from 'material-ui/styles';
 import Grid from 'material-ui/Grid';
 import AddCircleOutline from 'material-ui-icons/AddCircleOutline';
 import NumberHighlight from "../shared/NumberHighlight";
@@ -91,7 +91,7 @@ class PortfolioDashboard extends Component {
                     <NumberHighlight number={totalProfit} suffix={'€'} /> (<NumberHighlight number={totalProfit/totalCost*100} suffix={'%'} />)
                 </Typography>
                 <div>
-                    <PortfolioRepartitionChart items={this.state.holdings}/>
+                    <PortfolioRepartitionChart items={this.state.holdings} portfolioId={this.props.match.params.id}/>
                 </div>
                 <div className={classes.root}>
                     <Grid container spacing={24}>
