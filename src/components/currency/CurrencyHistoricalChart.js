@@ -142,10 +142,12 @@ class CurrencyHistoricalChart extends Component {
                     onChange={this.scaleChange}
                     className={classes.inline}
                 >
-                    <FormControlLabel value="H" control={<Radio />} label="H" />
-                    <FormControlLabel value="D" control={<Radio />} label="D" />
-                    <FormControlLabel value="W" control={<Radio />} label="W" />
-                    <FormControlLabel value="M" control={<Radio />} label="M" />
+                    <FormControlLabel value="H" control={<Radio />} label="1H" />
+                    <FormControlLabel value="D" control={<Radio />} label="1D" />
+                    <FormControlLabel value="W" control={<Radio />} label="1W" />
+                    <FormControlLabel value="M" control={<Radio />} label="1M" />
+                    <FormControlLabel value="Y" control={<Radio />} label="1Y" />
+                    <FormControlLabel value="A" control={<Radio />} label="3Y" />
                 </RadioGroup>
                 <div>
                     <Line data={this.state.data}

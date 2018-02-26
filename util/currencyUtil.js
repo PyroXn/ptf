@@ -202,6 +202,16 @@ exports.historicalData = function(currency, scale = 'W') {
         case 'M':
             url = 'https://min-api.cryptocompare.com/data/histoday';
             break;
+        case 'Y':
+            url = 'https://min-api.cryptocompare.com/data/histoday';
+            qs.aggregate = 3;
+            qs.limit = 122;
+            break;
+        case 'A':
+            url = 'https://min-api.cryptocompare.com/data/histoday';
+            qs.aggregate = 10;
+            qs.limit = 108;
+            break;
     }
 
     // H
@@ -215,6 +225,12 @@ exports.historicalData = function(currency, scale = 'W') {
 
     // M
     // https://min-api.cryptocompare.com/data/histoday?fsym=BTC&tsym=USD
+
+    // Y
+    // https://min-api.cryptocompare.com/data/histoday?fsym=BTC&tsym=USD&aggregate=3&limit=122
+
+    // A
+    // https://min-api.cryptocompare.com/data/histoday?fsym=BTC&tsym=USD&aggregate=10&limit=108
 
     tsyms.forEach(tsym => {
         qs.tsym = tsym;
