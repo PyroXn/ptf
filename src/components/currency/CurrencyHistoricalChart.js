@@ -90,7 +90,7 @@ class CurrencyHistoricalChart extends Component {
             label: this.state.currency.Symbol,
             fill: true,
             backgroundColor: palette[getRandomInt(72)],
-            data: this.state.historicalData.map(historical => historical[this.state.currencyFiat].price),
+            data: this.state.historicalData.map(historical => historical[this.state.currencyFiat] ? historical[this.state.currencyFiat].price : ''),
         });
         let data = {
             labels: labels,
@@ -133,6 +133,7 @@ class CurrencyHistoricalChart extends Component {
                     <FormControlLabel value="USD" control={<Radio />} label="USD" />
                     <FormControlLabel value="EUR" control={<Radio />} label="EUR" />
                     <FormControlLabel value="BTC" control={<Radio />} label="BTC" />
+                    <FormControlLabel value="ETH" control={<Radio />} label="ETH" />
                 </RadioGroup>
                 <RadioGroup
                     aria-label="scale"
@@ -141,10 +142,12 @@ class CurrencyHistoricalChart extends Component {
                     onChange={this.scaleChange}
                     className={classes.inline}
                 >
-                    <FormControlLabel value="H" control={<Radio />} label="H" />
-                    <FormControlLabel value="D" control={<Radio />} label="D" />
-                    <FormControlLabel value="W" control={<Radio />} label="W" />
-                    <FormControlLabel value="M" control={<Radio />} label="M" />
+                    <FormControlLabel value="H" control={<Radio />} label="1H" />
+                    <FormControlLabel value="D" control={<Radio />} label="1D" />
+                    <FormControlLabel value="W" control={<Radio />} label="1W" />
+                    <FormControlLabel value="M" control={<Radio />} label="1M" />
+                    <FormControlLabel value="Y" control={<Radio />} label="1Y" />
+                    <FormControlLabel value="A" control={<Radio />} label="3Y" />
                 </RadioGroup>
                 <div>
                     <Line data={this.state.data}
