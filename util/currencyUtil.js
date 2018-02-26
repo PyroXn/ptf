@@ -179,7 +179,7 @@ exports.historicalPrice = function(transaction) {
 
 
 exports.historicalData = function(currency, scale = 'W') {
-    let tsyms = ['USD', 'EUR', 'BTC'];
+    let tsyms = ['USD', 'EUR', 'BTC', 'ETH'];
     let requests = [];
 
     let url;

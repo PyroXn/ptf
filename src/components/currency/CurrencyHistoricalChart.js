@@ -90,7 +90,7 @@ class CurrencyHistoricalChart extends Component {
             label: this.state.currency.Symbol,
             fill: true,
             backgroundColor: palette[getRandomInt(72)],
-            data: this.state.historicalData.map(historical => historical[this.state.currencyFiat].price),
+            data: this.state.historicalData.map(historical => historical[this.state.currencyFiat] ? historical[this.state.currencyFiat].price : ''),
         });
         let data = {
             labels: labels,
@@ -133,6 +133,7 @@ class CurrencyHistoricalChart extends Component {
                     <FormControlLabel value="USD" control={<Radio />} label="USD" />
                     <FormControlLabel value="EUR" control={<Radio />} label="EUR" />
                     <FormControlLabel value="BTC" control={<Radio />} label="BTC" />
+                    <FormControlLabel value="ETH" control={<Radio />} label="ETH" />
                 </RadioGroup>
                 <RadioGroup
                     aria-label="scale"
